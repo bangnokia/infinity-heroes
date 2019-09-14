@@ -10,7 +10,7 @@
 </head>
 <body>
 
-    <canvas id="map" width="3200" height="1600"></canvas>
+    <canvas id="map" width="6400" height="3200"></canvas>
 
     <script src="map.js"></script>
     <script type="text/javascript">
@@ -24,6 +24,9 @@
             for (let j = 0; j < baseMap[i].length; j++) {
                 if (tileTypes.indexOf(baseMap[i][j]) === -1) {
                     tileTypes.push(baseMap[i][j]);
+                    if (baseMap[i][j] == 25) {
+                        console.log(i, j);
+                    }
                 }
             }
         }
@@ -32,7 +35,7 @@
 
         var canvas = document.getElementById('map');
         var ctx = canvas.getContext('2d');
-        ctx.translate(canvas.width / 5, 0);
+        ctx.translate(canvas.width / 2, 0);
         // ctx.rotate(Math.PI / 4);
 
         var mapSize = 100;
@@ -51,10 +54,8 @@
             for (let i = 0; i < mapSize; i ++) {
                 y = i * tileHeight/2;
                 for (let j = 0; j < mapSize; j++) {
-                    // console.log(x, y);
-                    if (baseMap[i][j] == 1) {
-                        ctx.drawImage(sprite, 414, 943, 64, 82, x - j * tileWidth/2, y + tileHeight /2, 32, 41);
-                    }
+                    let tileCoordinate = getTile(baseMap[i][j]);
+                    ctx.drawImage(sprite, tileCoordinate[0], tileCoordinate[1], 64, 82,x - j * tileWidth/2, y + tileHeight /2, 64, 82);
                     y += tileHeight / 2;
                 }
                 x += tileWidth/2;
@@ -63,14 +64,36 @@
 
         function getTile(tileId)
         {
-            switch (tileId) {
-                case 1:
-                    return 'blue';
-                break;
-
-                default:
-                    return '#fff';
-            }
+            return mapping = {
+                1: [414, 943],
+                10: [638, 738],
+                11: [356, 558],
+                12: [494, 859],
+                13: [638, 905],
+                14: [638, 905],
+                20: [566, 906],
+                21: [740, 943],
+                22: [884, 944],
+                23: [647, 570],
+                24: [484, 943],
+                25: [859, 859],
+                30: [638, 820],
+                31: [282, 564],
+                32: [575, 531],
+                33: [712, 858],
+                34: [484, 943],
+                40: [429, 558],
+                41: [812, 943],
+                42: [533, 673],
+                43: [785, 857],
+                44: [502, 588],
+                45: [930, 858],
+                46: [710, 775],
+                50: [566, 822],
+                51: [494, 775],
+                52: [607, 655],
+                53: [679, 655],
+            }[tileId];
         }
 
         window.onload = function () {
