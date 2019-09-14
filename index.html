@@ -7,8 +7,8 @@
     <style>
         #app {
             display: block;
-            width: 700px;
-            height: 700px;
+            width: calc(100vw - 322px);
+            height: 100vh;
             overflow: scroll;
             float: right;
         }
@@ -98,7 +98,6 @@
             const resources = mapResources();
             for (var resource in resources) {
                 if (resources.hasOwnProperty(resource)) {
-
                     for (let i = 0; i <  resources[resource].length; i++) {
                         if (resources[resource][i][0] === x && resources[resource][i][1] === y) {
                             return resourceAssets()[resource];
