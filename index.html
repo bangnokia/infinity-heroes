@@ -8,7 +8,7 @@
         #app {
             display: block;
             width: calc(100vw - 322px);
-            height: 100vh;
+            height: 96vh;
             overflow: scroll;
             float: right;
         }
@@ -27,156 +27,164 @@
 	<script src="map.js"></script>
 
 	<script type="text/javascript">
-		mapData = mapData.items;
-        const baseMap = mapData.map;
-        const baseMapHigh = mapData.high;
+        var App = function (config) {
 
-        var canvas = document.getElementById('map');
-        var ctx = canvas.getContext('2d');
+            var mapSize = 100, mapWidth = 6400, mapHeight = 3200;
+            var tileWidth, tileHeight, canvas, ctx, mapData, resourceAssets, sprite;
 
-        var mapWidth = 6400;
-        var mapHeight = 3200;
+            this.run = function () {
+                var $this = this;
+                this.init();
 
-        canvas.width = mapWidth + 100;
-        canvas.height = mapHeight + 100;
-        ctx.translate(canvas.width / 2, 0);
-        //ctx.rotate(Math.PI / 180 * 60, true);
+                sprite.onload = function () {
+                    $this.draw();
+                }
+            };
 
+            this.init = function () {
+                canvas = document.getElementById('map');
+                ctx = canvas.getContext('2d');
+                canvas.width = mapWidth + 100;
+                canvas.height = mapHeight + 100;
+                ctx.translate(canvas.width / 2, 0);
 
-        var mapSize = 100;
-        var tileWidth = mapWidth / mapSize;
-        var tileHeight = mapHeight / mapSize;
-        var sprite = new Image();
-        sprite.src = './data/sprite.png';
+                tileWidth = mapWidth / mapSize;
+                tileHeight = mapHeight / mapSize;
 
-        function draw() {
-            var x = 0;
-            var y = 0;
+                mapData = config.mapData;
+                resourceAssets = {
+                    'oasis': [111, 814, 123, 79],
+                    'ruin': [2, 802, 103, 91],
+                };
 
-            for (let i = 0; i < mapSize; i++) {
-                y = i * tileHeight / 2;
-                for (let j = 0; j < mapSize; j++) {
-                    let tileCoordinate = getTile(baseMap[i][j]);
-                    ctx.drawImage(
-                        sprite,
-                        tileCoordinate[0],
-                        tileCoordinate[1],
-                        64,
-                        82,
-                        x - j * tileWidth / 2,
-                        y + tileHeight / 2 - (baseMapHigh[i][j] * 2),
-                        64,
-                        82
-                    );
+                sprite = new Image();
+                sprite.src = './data/sprite.png';
+            }
 
-                    let coord = checkAsset(i, j);
+            this.draw = function() {
+                console.log('in draw');
+                var x = 0;
+                var y = 0;
 
-                    if (coord !== false) {
-                        console.log(coord);
+                for (let i = 0; i < mapSize; i++) {
+                    y = i * tileHeight / 2;
+                    for (let j = 0; j < mapSize; j++) {
+                        let tileCoordinate = getTile(mapData.map[i][j]);
+
+                        // ctx.fillStyle = 'red';
+                        // ctx.fillRect(x - j * tileWidth / 2, y + tileHeight / 2 - (mapData.high[i][j] * 2), 64,32)
+
                         ctx.drawImage(
                             sprite,
-                            coord[0],
-                            coord[1],
-                            coord[2],
-                            coord[3],
-                            x - j * tileWidth / 2 + 5,
-                            y + tileHeight / 2 - (baseMapHigh[i][j] * 2) - 13,
-                            50,
-                            44
+                            tileCoordinate[0],
+                            tileCoordinate[1],
+                            64,
+                            82,
+                            x - j * tileWidth/2,
+                            y + tileHeight/2 - (mapData.high[i][j]*2),
+                            64,
+                            82
                         );
+
+                        let coord = checkAsset(i, j);
+                        if (coord !== false) {
+                            console.log(coord);
+                            ctx.drawImage(
+                                sprite,
+                                coord[0],
+                                coord[1],
+                                coord[2],
+                                coord[3],
+                                x - j * tileWidth / 2 + 5,
+                                y + tileHeight / 2 - (mapData.high[i][j] * 2) - 13,
+                                50,
+                                44
+                            );
+                        }
+                        y += tileHeight / 2;
                     }
-
-
-                    y += tileHeight / 2;
+                    x += tileWidth / 2;
                 }
-                x += tileWidth / 2;
-            }
-            document.getElementById('app').scrollLeft = 3000;
-        }
+                document.getElementById('app').scrollLeft = 3000;
+            };
 
-        function checkAsset(x, y) {
-            const resources = mapResources();
-            for (var resource in resources) {
-                if (resources.hasOwnProperty(resource)) {
-                    for (let i = 0; i <  resources[resource].length; i++) {
-                        if (resources[resource][i][0] === x && resources[resource][i][1] === y) {
-                            return resourceAssets()[resource];
+            var checkAsset = function(x, y) {
+                var resources = getResources();
+                for (let resource in resources) {
+                    if (resources.hasOwnProperty(resource)) {
+                        for (let i = 0; i < resources[resource].length; i++) {
+                            if (resources[resource][i][0] === x && resources[resource][i][1] === y) {
+                                return resourceAssets[resource];
+                            }
                         }
                     }
                 }
+
+                return false;
             }
 
-            return false;
-        }
-
-        function mapResources()
-        {
-            return {
-                'oasis': [
-                   [5,13],
-                   [5, 17],
-                   [10,17],
-                   [13,17],
-                   [4,23],
-                   [7,23],
-                   [17,10],
-                ],
-                'ruin': [
-                    [8,13],
-                    [10,17],
-                    [11,14],
-                    [14,16],
-                    [2,23],
-                    [8,22],
-                    [18,11],
-                    [8,27],
-                    [21,7],
-                ]
-            };
-        }
-
-        function resourceAssets() {
-            return {
-                'oasis': [111, 814, 123, 79],
-                'ruin': [2, 802, 103, 91],
+            var getResources = function() {
+                return {
+                    'oasis': [
+                       [5,13],
+                       [5, 17],
+                       [10,17],
+                       [13,17],
+                       [4,23],
+                       [7,23],
+                       [17,10],
+                    ],
+                    'ruin': [
+                        [8,13],
+                        [10,17],
+                        [11,14],
+                        [14,16],
+                        [2,23],
+                        [8,22],
+                        [18,11],
+                        [8,27],
+                        [21,7],
+                    ]
+                };
             }
-        }
 
-        function getTile(tileId) {
-            return mapping = {
-                1: [414, 943],
-                10: [638, 738],
-                11: [356, 558],
-                12: [494, 859],
-                13: [638, 905],
-                14: [638, 905],
-                20: [566, 906],
-                21: [740, 943],
-                22: [884, 944],
-                23: [647, 570],
-                24: [484, 943],
-                25: [859, 859],
-                30: [638, 820],
-                31: [282, 564],
-                32: [575, 531],
-                33: [712, 858],
-                34: [484, 943],
-                40: [429, 558],
-                41: [812, 943],
-                42: [533, 673],
-                43: [785, 857],
-                44: [502, 588],
-                45: [930, 858],
-                46: [710, 775],
-                50: [566, 822],
-                51: [494, 775],
-                52: [607, 655],
-                53: [679, 655],
-            }[tileId];
-        }
+            var getTile = function (tileId) {
+                return mapping = {
+                    1: [414, 943],
+                    10: [638, 738],
+                    11: [356, 558],
+                    12: [494, 859],
+                    13: [638, 905],
+                    14: [638, 905],
+                    20: [566, 906],
+                    21: [740, 943],
+                    22: [884, 944],
+                    23: [647, 570],
+                    24: [484, 943],
+                    25: [859, 859],
+                    30: [638, 820],
+                    31: [282, 564],
+                    32: [575, 531],
+                    33: [712, 858],
+                    34: [484, 943],
+                    40: [429, 558],
+                    41: [812, 943],
+                    42: [533, 673],
+                    43: [785, 857],
+                    44: [502, 588],
+                    45: [930, 858],
+                    46: [710, 775],
+                    50: [566, 822],
+                    51: [494, 775],
+                    52: [607, 655],
+                    53: [679, 655],
+                }[tileId];
+            }
+        };
 
         window.onload = function () {
-            draw();
+            var app = new App({mapData: mapData.items});
+            app.run();
         }
 
 	</script>
