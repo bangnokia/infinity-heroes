@@ -1,69 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Infinity heroes kingdom map</title>
 
+<head>
+	<meta charset="UTF-8">
+	<title>Infinity heroes kingdom map</title>
     <style>
-        canvas {border: 1px solid black;}
+        #app {
+            display: block;
+            width: 700px;
+            height: 700px;
+            overflow: scroll;
+            float: right;
+        }
     </style>
+
+    <script src="dragscroll.js"></script>
 </head>
+
 <body>
 
-    <canvas id="map" width="6400" height="3200"></canvas>
+    <div class="dragscroll" id="app">
+        <canvas id="map"></canvas>
+    </div>
 
-    <script src="map.js"></script>
-    <script type="text/javascript">
-        mapData = mapData.items;
+
+	<script src="map.js"></script>
+
+	<script type="text/javascript">
+		mapData = mapData.items;
         const baseMap = mapData.map;
-        console.log(mapData);
-        // console.log(baseMap);
-
-        var tileTypes = [];
-        for (let i = 0; i < baseMap.length; i++) {
-            for (let j = 0; j < baseMap[i].length; j++) {
-                if (tileTypes.indexOf(baseMap[i][j]) === -1) {
-                    tileTypes.push(baseMap[i][j]);
-                    if (baseMap[i][j] == 25) {
-                        console.log(i, j);
-                    }
-                }
-            }
-        }
-        tileTypes = tileTypes.sort();
-        // console.log(tileTypes);
+        const baseMapHigh = mapData.high;
 
         var canvas = document.getElementById('map');
         var ctx = canvas.getContext('2d');
+
+        var mapWidth = 6400;
+        var mapHeight = 3200;
+
+        canvas.width = mapWidth + 100;
+        canvas.height = mapHeight + 100;
         ctx.translate(canvas.width / 2, 0);
-        // ctx.rotate(Math.PI / 4);
+        //ctx.rotate(Math.PI / 180 * 60, true);
+
 
         var mapSize = 100;
-        var tileWidth = canvas.width / mapSize;
-        var tileHeight = canvas.height / mapSize;
+        var tileWidth = mapWidth / mapSize;
+        var tileHeight = mapHeight / mapSize;
         var sprite = new Image();
         sprite.src = './data/sprite.png';
-
-        var castle = new Image();
-        castle.src = './data/Castle.png';
 
         function draw() {
             var x = 0;
             var y = 0;
 
-            for (let i = 0; i < mapSize; i ++) {
-                y = i * tileHeight/2;
+            for (let i = 0; i < mapSize; i++) {
+                y = i * tileHeight / 2;
                 for (let j = 0; j < mapSize; j++) {
                     let tileCoordinate = getTile(baseMap[i][j]);
-                    ctx.drawImage(sprite, tileCoordinate[0], tileCoordinate[1], 64, 82,x - j * tileWidth/2, y + tileHeight /2, 64, 82);
+                    ctx.drawImage(
+                        sprite,
+                        tileCoordinate[0],
+                        tileCoordinate[1],
+                        64,
+                        82,
+                        x - j * tileWidth / 2,
+                        y + tileHeight / 2 - (baseMapHigh[i][j] * 2),
+                        64,
+                        82
+                    );
+
+                    let coord = checkAsset(i, j);
+
+                    if (coord !== false) {
+                        console.log(coord);
+                        ctx.drawImage(
+                            sprite,
+                            coord[0],
+                            coord[1],
+                            coord[2],
+                            coord[3],
+                            x - j * tileWidth / 2 + 5,
+                            y + tileHeight / 2 - (baseMapHigh[i][j] * 2) - 13,
+                            50,
+                            44
+                        );
+                    }
+
+
                     y += tileHeight / 2;
                 }
-                x += tileWidth/2;
+                x += tileWidth / 2;
+            }
+            document.getElementById('app').scrollLeft = 2900;
+        }
+
+        function checkAsset(x, y) {
+            const resources = mapResources();
+            for (var resource in resources) {
+                if (resources.hasOwnProperty(resource)) {
+
+                    for (let i = 0; i <  resources[resource].length; i++) {
+                        if (resources[resource][i][0] === x && resources[resource][i][1] === y) {
+                            return resourceAssets()[resource];
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        function mapResources()
+        {
+            return {
+                'oasis': [
+                    [25,25],
+                    [10,15],
+                    [5,2]
+                ],
+                'ruin': [
+                    [6,7]
+                ]
+            };
+        }
+
+        function resourceAssets() {
+            return {
+                'oasis': [111, 814, 123, 79],
+                'ruin': [2, 802, 103, 91],
             }
         }
 
-        function getTile(tileId)
-        {
+        function getTile(tileId) {
             return mapping = {
                 1: [414, 943],
                 10: [638, 738],
@@ -99,6 +167,8 @@
         window.onload = function () {
             draw();
         }
-    </script>
+
+	</script>
 </body>
+
 </html>
