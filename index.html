@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Infinity heroes kingdom map</title>
+
+    <style>
+        canvas {border: 1px solid black;}
+    </style>
+</head>
+<body>
+
+    <canvas id="map" width="3200" height="1600"></canvas>
+
+    <script src="map.js"></script>
+    <script type="text/javascript">
+        mapData = mapData.items;
+        const baseMap = mapData.map;
+        console.log(mapData);
+        // console.log(baseMap);
+
+        var tileTypes = [];
+        for (let i = 0; i < baseMap.length; i++) {
+            for (let j = 0; j < baseMap[i].length; j++) {
+                if (tileTypes.indexOf(baseMap[i][j]) === -1) {
+                    tileTypes.push(baseMap[i][j]);
+                }
+            }
+        }
+        tileTypes = tileTypes.sort();
+        // console.log(tileTypes);
+
+        var canvas = document.getElementById('map');
+        var ctx = canvas.getContext('2d');
+        ctx.translate(canvas.width / 5, 0);
+        // ctx.rotate(Math.PI / 4);
+
+        var mapSize = 100;
+        var tileWidth = canvas.width / mapSize;
+        var tileHeight = canvas.height / mapSize;
+        var sprite = new Image();
+        sprite.src = './data/sprite.png';
+
+        var castle = new Image();
+        castle.src = './data/Castle.png';
+
+        function draw() {
+            var x = 0;
+            var y = 0;
+
+            for (let i = 0; i < mapSize; i ++) {
+                y = i * tileHeight/2;
+                for (let j = 0; j < mapSize; j++) {
+                    // console.log(x, y);
+                    if (baseMap[i][j] == 1) {
+                        ctx.drawImage(sprite, 414, 943, 64, 82, x - j * tileWidth/2, y + tileHeight /2, 32, 41);
+                    }
+                    y += tileHeight / 2;
+                }
+                x += tileWidth/2;
+            }
+        }
+
+        function getTile(tileId)
+        {
+            switch (tileId) {
+                case 1:
+                    return 'blue';
+                break;
+
+                default:
+                    return '#fff';
+            }
+        }
+
+        window.onload = function () {
+            draw();
+        }
+    </script>
+</body>
+</html>
