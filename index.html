@@ -5,12 +5,38 @@
 	<meta charset="UTF-8">
 	<title>Infinity heroes kingdom map</title>
     <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        .main {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
         #app {
-            display: block;
-            width: calc(100vw - 322px);
-            height: 96vh;
+            height: 100vh;
             overflow: scroll;
-            float: right;
+            flex: 4 1 0;
+        }
+        .control {
+            background: red;
+            width: 240px;
+            flex: 1 1 0;
+        }
+        .resource-wrapper {
+            display: inline-block;
+            float: left;
+            width: 50%;
+        }
+        .resource-wrapper form input {
+            width: 32px;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        table tr td, table tr th {
+            border: 1px solid #000;
         }
     </style>
 
@@ -19,11 +45,68 @@
 
 <body>
 
-    <div class="dragscroll" id="app">
-        <canvas id="map"></canvas>
+    <div class="main">
+        <div class="control">
+            <h1>GermanWings</h1>
+            <div>Season : 21</div>
+            <div class="resource-wrapper">
+                <h3>Ruin</h3>
+                <form data-type="ruin" class="resource-form">
+                    <input type="text" name="x">
+                    <input type="text" name="y">
+                    <button type="submit">+</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>x</th>
+                            <th>y</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>322</td>
+                            <td>314</td>
+                            <td>x</td>
+                       </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="resource-wrapper">
+                <h3>Oasis</h3>
+                <form data-type="oasis" class="resource-form">
+                    <input type="text" name="x">
+                    <input type="text" name="y">
+                    <button type="submit">+</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>X</th>
+                            <th>Y</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>322</td>
+                            <td>314</td>
+                            <td>x</td>
+                       </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dragscroll" id="app">
+            <canvas id="map"></canvas>
+        </div>
     </div>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
 	<script src="map.js"></script>
 
 	<script type="text/javascript">
@@ -62,7 +145,6 @@
             }
 
             this.draw = function() {
-                console.log('in draw');
                 var x = 0;
                 var y = 0;
 
@@ -70,9 +152,6 @@
                     y = i * tileHeight / 2;
                     for (let j = 0; j < mapSize; j++) {
                         let tileCoordinate = getTile(mapData.map[i][j]);
-
-                        // ctx.fillStyle = 'red';
-                        // ctx.fillRect(x - j * tileWidth / 2, y + tileHeight / 2 - (mapData.high[i][j] * 2), 64,32)
 
                         ctx.drawImage(
                             sprite,
@@ -88,7 +167,6 @@
 
                         let coord = checkAsset(i, j);
                         if (coord !== false) {
-                            console.log(coord);
                             ctx.drawImage(
                                 sprite,
                                 coord[0],
@@ -185,6 +263,17 @@
         window.onload = function () {
             var app = new App({mapData: mapData.items});
             app.run();
+
+            var forms = document.getElementsByClassName('resource-form');
+            console.log(forms.length);
+            for (let i = 0; i < forms.length; i++) {
+                forms[i].addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    var formData = new FormData(this);
+                    console.log(formData.get('x'));
+                    console.log(this.dataset.type);
+                });
+            }
         }
 
 	</script>
