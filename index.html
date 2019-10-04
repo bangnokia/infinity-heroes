@@ -34,6 +34,7 @@
             flex: 4 1 0;
         }
         .control {
+            position: relative;
             background: red;
             width: 240px;
             flex: 1 1 0;
@@ -64,6 +65,11 @@
             cursor: pointer;
             font-weight: bold;
         }
+        .toggle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
     </style>
 
     <script src="dragscroll.js"></script>
@@ -73,54 +79,58 @@
 
     <div class="main">
         <div class="control">
-            <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
-            <div>Season : 22</div>
-            <div class="resource-wrapper">
-                <h3>Ruin</h3>
-                <form data-type="ruin" class="resource-form">
-                    <input type="text" name="x">
-                    <input type="text" name="y">
-                    <button type="submit">+</button>
-                </form>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>X</th>
-                            <th>Y</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div>
+                <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
+                    <div>Season : 22</div>
+                    <div class="resource-wrapper">
+                        <h3>Ruin</h3>
+                        <form data-type="ruin" class="resource-form">
+                            <input type="text" name="x">
+                            <input type="text" name="y">
+                            <button type="submit">+</button>
+                        </form>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="resource-wrapper">
+                        <h3>Oasis</h3>
+                        <form data-type="oasis" class="resource-form">
+                            <input type="text" name="x">
+                            <input type="text" name="y">
+                            <button type="submit">+</button>
+                        </form>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-
-            <div class="resource-wrapper">
-                <h3>Oasis</h3>
-                <form data-type="oasis" class="resource-form">
-                    <input type="text" name="x">
-                    <input type="text" name="y">
-                    <button type="submit">+</button>
-                </form>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>X</th>
-                            <th>Y</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
         <div class="dragscroll" id="app">
             <canvas id="map"></canvas>
         </div>
+
+        <div class="toggle"><button>Toggle</a></div>
     </div>
 
 
@@ -214,6 +224,10 @@
                             loadResources();
                         }
                     })
+                });
+
+                $('.toggle').on('click', function () {
+                    $('.control').toggle();
                 });
             };
 
