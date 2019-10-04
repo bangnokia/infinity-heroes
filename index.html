@@ -38,6 +38,9 @@
         table tr td, table tr th {
             border: 1px solid #000;
         }
+        .delete-resource {
+            cursor: pointer;
+        }
     </style>
 
     <script src="dragscroll.js"></script>
@@ -65,11 +68,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>322</td>
-                            <td>314</td>
-                            <td>x</td>
-                       </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -90,11 +89,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>322</td>
-                            <td>314</td>
-                            <td>x</td>
-                       </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -106,7 +101,10 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
 	<script src="./data/seasons/22.js"></script>
 
 	<script type="text/javascript">
@@ -114,14 +112,25 @@
 
             var mapSize = 100, mapWidth = 6400, mapHeight = 3200;
             var tileWidth, tileHeight, canvas, ctx, mapData, resourceAssets, sprite;
+            var resources = {'ruin': [], 'oasis': []};
+            var rawResourcesData = [];
+            var el = {};
+            var seasonId = 22;
+            var apiUrl = 'http://core.daudau.cc/api/ih';
 
             this.run = function () {
                 var $this = this;
                 this.init();
 
                 sprite.onload = function () {
-                    $this.draw();
+                    draw();
+                    document.getElementById('app').scrollLeft = 3000;
                 }
+
+                el.resourceForm = $('.resource-form');
+
+                this.bindEvents();
+                loadResources();
             };
 
             this.init = function () {
@@ -144,7 +153,79 @@
                 sprite.src = './data/sprite.png';
             }
 
-            this.draw = function() {
+            this.bindEvents = function () {
+                el.resourceForm.on('submit', function (e) {
+                    var thisForm = $(this);
+                    e.preventDefault();
+                    $.ajax({
+                        url: apiUrl + '/season/' + seasonId + '/resources',
+                        type: 'POST',
+                        data: {
+                            x: $(this).find('input[name="x"]').val(),
+                            y: $(this).find('input[name="y"]').val(),
+                            type: $(this).data('type')
+                        },
+                        success: function (res) {
+                            $(this).trigger('reset');
+                            loadResources();
+                        }
+                    })
+                });
+
+                $(document).on('click', '.delete-resource', function () {
+                    let x = $(this).parent().find('td')[0].textContent;
+                    let y = $(this).parent().find('td')[1].textContent;
+
+                    let r = rawResourcesData.find(function (item) {
+                        return item['x'] == x && item['y'] == y;
+                    });
+
+                    $.ajax({
+                        url: apiUrl + '/season/' + seasonId + '/resources/' + r.id,
+                        type: 'DELETE',
+                        success: function (res) {
+                            loadResources();
+                        }
+                    })
+                });
+            };
+
+            var loadResources = function() {
+                $.ajax({
+                    url: apiUrl + '/season/' + seasonId + '/resources',
+                    success: function (res) {
+                        rawResourcesData = res;
+                        resources = {
+                            'ruin': [],
+                            'oasis': [],
+                        };
+                        res.map(function (item) {
+                            resources[item.type].push([item.x, item.y]);
+                            renderResourcesTable();
+                            draw();
+                        });
+                    }
+                });
+            };
+
+            var renderResourcesTable = function () {
+                for (let type in resources) {
+                    if (resources.hasOwnProperty(type)) {
+                        let form = el.resourceForm.filter(function () {
+                            return $(this).data('type') == type;
+                        });
+
+                        let table = form.parent().find('table');
+                        table.find('tbody').html('');
+                        data = resources[type];
+                        data.map(function (item) {
+                            table.find('tbody').append('<tr><td>'+item[0]+'</td><td>'+item[1]+'</td><td class="delete-resource">x</td></tr>')
+                        });
+                    }
+                }
+            };
+
+            var draw = function() {
                 var x = 0;
                 var y = 0;
 
@@ -183,16 +264,14 @@
                     }
                     x += tileWidth / 2;
                 }
-                document.getElementById('app').scrollLeft = 3000;
             };
 
             var checkAsset = function(x, y) {
-                var resources = getResources();
-                for (let resource in resources) {
-                    if (resources.hasOwnProperty(resource)) {
-                        for (let i = 0; i < resources[resource].length; i++) {
-                            if (resources[resource][i][0] === x && resources[resource][i][1] === y) {
-                                return resourceAssets[resource];
+                for (let type in resources) {
+                    if (resources.hasOwnProperty(type)) {
+                        for (let i = 0; i < resources[type].length; i++) {
+                            if (resources[type][i][0] === x && resources[type][i][1] === y) {
+                                return resourceAssets[type];
                             }
                         }
                     }
@@ -246,26 +325,26 @@
             }
         };
 
-        window.onload = function () {
+        $(document).ready(function () {
             var app = new App({mapData: mapData.items});
             app.run();
 
-            var forms = document.getElementsByClassName('resource-form');
-            console.log(forms.length);
-            for (let i = 0; i < forms.length; i++) {
-                forms[i].addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    var formData = new FormData(this);
-                    console.log(formData.get('x'));
-                    console.log(this.dataset.type);
-                });
-            }
-        }
+            // var forms = document.getElementsByClassName('resource-form');
+            // console.log(forms.length);
+            // for (let i = 0; i < forms.length; i++) {
+            //     forms[i].addEventListener('submit', function(event) {
+            //         event.preventDefault();
+            //         var formData = new FormData(this);
+            //         console.log(formData.get('x'));
+            //         console.log(this.dataset.type);
+            //     });
+            // }
+        });
 
 	</script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-37232412-23"></script>
+    <script async src="//www.googletagmanager.com/gtag/js?id=UA-37232412-23"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
