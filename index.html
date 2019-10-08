@@ -156,14 +156,11 @@
                 this.init();
 
                 sprite.onload = function () {
-                    draw();
+                    loadResources();
                     document.getElementById('app').scrollLeft = 3000;
                 }
 
-                el.resourceForm = $('.resource-form');
-
                 this.bindEvents();
-                loadResources();
             };
 
             this.init = function () {
@@ -184,6 +181,8 @@
 
                 sprite = new Image();
                 sprite.src = './data/sprite.png';
+
+                el.resourceForm = $('.resource-form');
             }
 
             this.bindEvents = function () {
