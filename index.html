@@ -38,6 +38,7 @@
             background: red;
             width: 240px;
             flex: 1 1 0;
+            /*display:none;*/
         }
         .resource-wrapper {
             display: inline-block;
@@ -157,6 +158,11 @@
             var el = {};
             var seasonId = 22;
             var apiUrl = 'http://core.daudau.cc/api/ih';
+            var castle = {
+                x: 73,
+                y: 92,
+                type: 'castle'
+            };
 
             this.run = function () {
                 var $this = this;
@@ -164,7 +170,8 @@
 
                 sprite.onload = function () {
                     loadResources();
-                    document.getElementById('app').scrollLeft = 3000;
+                    // document.getElementById('app').scrollLeft = 3000;
+                    centerTo(castle.x, castle.y);
                 }
 
                 this.bindEvents();
@@ -173,12 +180,13 @@
             this.init = function () {
                 canvas = document.getElementById('map');
                 ctx = canvas.getContext('2d');
-                canvas.width = mapWidth + 100;
-                canvas.height = mapHeight + 100;
-                ctx.translate(canvas.width / 2, 0);
+                canvas.width = mapWidth;
+                canvas.height = mapHeight + 48;
 
                 tileWidth = mapWidth / mapSize;
                 tileHeight = mapHeight / mapSize;
+
+                ctx.translate(canvas.width/2 - tileWidth/2, 0 - tileHeight/2);
 
                 mapData = config.mapData;
                 resourceAssets = {
@@ -237,7 +245,7 @@
                         success: function (res) {
                             loadResources();
                         }
-                    })
+                    });
                 });
 
                 $('.toggle').on('click', function () {
@@ -320,6 +328,22 @@
                                 44
                             );
                         }
+
+                        // draw castle
+                        if (castle.x == i && castle.y == j) {
+                            ctx.drawImage(
+                                sprite,
+                                getTile('castle')[0],
+                                getTile('castle')[1],
+                                133,
+                                113,
+                                x - j * tileWidth / 2 + 5,
+                                y + tileHeight / 2 - (mapData.high[i][j] * 2) - 13,
+                                50,
+                                44
+                            );
+                        }
+
                         y += tileHeight / 2;
                     }
                     x += tileWidth / 2;
@@ -383,12 +407,17 @@
                     51: [494, 775],
                     52: [607, 655],
                     53: [679, 655],
+                    castle: [42, 898],
                 }[tileId];
             };
 
             var actionLog = function (message) {
                 el.actionLog.html(message !== '' ? message + '...' : message);
-            }
+            };
+
+            var centerTo = function (x, y) {
+                // document.getElementById('app').scrollLeft = ;
+            };
         };
 
         $(document).ready(function () {
