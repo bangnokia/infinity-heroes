@@ -86,6 +86,7 @@
             <div>
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>Season : 22</div>
+                    <div><a href="javascript:document.getElementById('map').toDataURL('image/png').replace('image/png', 'image/octet-stream')" download="map.png">download map</a></div>
                     <div id="action-log"></div>
                     <div class="list-resources">
                         <div class="resource-wrapper">
@@ -156,7 +157,7 @@
             var rawResourcesData = [];
             var el = {};
             var seasonId = 22;
-            var apiUrl = 'http://core.daudau.cc/api/ih';
+            var apiUrl = '//core.daudau.cc/api/ih';
 
             this.run = function () {
                 var $this = this;
