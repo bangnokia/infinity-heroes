@@ -70,6 +70,10 @@
             bottom: 0;
             left: 0;
         }
+        .list-resources {
+            height: 80vh;
+            overflow-y: scroll;
+        }
     </style>
 
     <script src="dragscroll.js"></script>
@@ -83,46 +87,48 @@
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>Season : 22</div>
                     <div id="action-log"></div>
-                    <div class="resource-wrapper">
-                        <h3>Ruin</h3>
-                        <form data-type="ruin" class="resource-form">
-                            <input type="text" name="x">
-                            <input type="text" name="y">
-                            <button type="submit">+</button>
-                        </form>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>X</th>
-                                    <th>Y</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="list-resources">
+                        <div class="resource-wrapper">
+                            <h3>Ruin</h3>
+                            <form data-type="ruin" class="resource-form">
+                                <input type="text" name="x">
+                                <input type="text" name="y">
+                                <button type="submit">+</button>
+                            </form>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <div class="resource-wrapper">
-                        <h3>Oasis</h3>
-                        <form data-type="oasis" class="resource-form">
-                            <input type="text" name="x">
-                            <input type="text" name="y">
-                            <button type="submit">+</button>
-                        </form>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>X</th>
-                                    <th>Y</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div class="resource-wrapper">
+                            <h3>Oasis</h3>
+                            <form data-type="oasis" class="resource-form">
+                                <input type="text" name="x">
+                                <input type="text" name="y">
+                                <button type="submit">+</button>
+                            </form>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -253,9 +259,9 @@
                         };
                         res.map(function (item) {
                             resources[item.type].push([item.x, item.y]);
-                            renderResourcesTable();
-                            draw();
                         });
+                        renderResourcesTable();
+                        draw();
                     }
                 });
             };
@@ -280,6 +286,8 @@
             var draw = function() {
                 var x = 0;
                 var y = 0;
+
+                console.log('start draw');
 
                 for (let i = 0; i < mapSize; i++) {
                     y = i * tileHeight / 2;
@@ -316,6 +324,8 @@
                     }
                     x += tileWidth / 2;
                 }
+
+                console.log('end draw');
             };
 
             var checkAsset = function(x, y) {
