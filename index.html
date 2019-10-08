@@ -86,7 +86,10 @@
             <div>
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>Season : 22</div>
-                    <div><a href="javascript:document.getElementById('map').toDataURL('image/png').replace('image/png', 'image/octet-stream')" download="map.png">download map</a></div>
+                    <div>
+                        <!-- <a href="javascript:document.getElementById('map').toDataURL('image/png').replace('image/png', 'image/octet-stream')" download="map.png">download map</a> -->
+                        <button id="download-map">download the map</button>
+                    </div>
                     <div id="action-log"></div>
                     <div class="list-resources">
                         <div class="resource-wrapper">
@@ -192,6 +195,7 @@
 
                 el.resourceForm = $('.resource-form');
                 el.actionLog = $('#action-log');
+                el.btnDownloadMap = $('#download-map');
             }
 
             this.bindEvents = function () {
@@ -243,6 +247,12 @@
 
                 $('.toggle').on('click', function () {
                     $('.control').toggle();
+                });
+
+                el.btnDownloadMap.on('click', function () {
+                    console.log("click download map");
+                    var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                    window.location.href = image;
                 });
             };
 
