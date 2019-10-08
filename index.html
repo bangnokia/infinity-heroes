@@ -92,9 +92,7 @@
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>
                         <h3 class="title">Season : 22</h3>
-                        <a id="download" download="map.png">
-                            <button id="download-map">download the map</button>
-                        </a>
+                        <button id="download-map">download the map</button>
                     </div>
                     <div>
 
@@ -266,12 +264,25 @@
                 });
 
                 el.btnDownloadMap.on('click', function () {
-                    console.log("click download map");
-                    var download = document.getElementById("download");
-                    var image = canvas.toDataURL("image/png")
-                        .replace("image/png", "image/octet-stream");
-                    download.setAttribute("href", image);
+                    var link = document.createElement("a");
+                    var imgData = canvas.toDataURL({    format: 'png',
+                        multiplier: 4});
+                    var strDataURI = imgData.substr(22, imgData.length);
+                    var blob = dataURLtoBlob(imgData);
+                    var objurl = URL.createObjectURL(blob);
+                    link.download = "kingdom_map.png";
+                    link.href = objurl;
+                    link.click();
                 });
+            };
+
+            var dataURLtoBlob = function dataURLtoBlob(dataurl) {
+                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new Blob([u8arr], {type:mime});
             };
 
             var loadResources = function() {
