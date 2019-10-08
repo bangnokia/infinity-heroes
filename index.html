@@ -87,8 +87,9 @@
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>Season : 22</div>
                     <div>
-                        <!-- <a href="javascript:document.getElementById('map').toDataURL('image/png').replace('image/png', 'image/octet-stream')" download="map.png">download map</a> -->
-                        <button id="download-map">download the map</button>
+                        <a id="download" download="map.png">
+                            <button id="download-map">download the map</button>
+                        </a>
                     </div>
                     <div id="action-log"></div>
                     <div class="list-resources">
@@ -251,8 +252,10 @@
 
                 el.btnDownloadMap.on('click', function () {
                     console.log("click download map");
-                    var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-                    window.location.href = image;
+                    var download = document.getElementById("download");
+                    var image = canvas.toDataURL("image/png")
+                        .replace("image/png", "image/octet-stream");
+                    download.setAttribute("href", image);
                 });
             };
 
