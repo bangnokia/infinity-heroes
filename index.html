@@ -82,6 +82,7 @@
             <div>
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>Season : 22</div>
+                    <div id="action-log"></div>
                     <div class="resource-wrapper">
                         <h3>Ruin</h3>
                         <form data-type="ruin" class="resource-form">
@@ -183,6 +184,7 @@
                 sprite.src = './data/sprite.png';
 
                 el.resourceForm = $('.resource-form');
+                el.actionLog = $('#action-log');
             }
 
             this.bindEvents = function () {
@@ -192,6 +194,9 @@
                     $.ajax({
                         url: apiUrl + '/season/' + seasonId + '/resources',
                         type: 'POST',
+                        beforeSend: function() {
+                            actionLog('saving');
+                        },
                         data: {
                             x: $(this).find('input[name="x"]').val(),
                             y: $(this).find('input[name="y"]').val(),
@@ -202,6 +207,10 @@
                             loadResources();
                         }
                     })
+                });
+
+                $(document).ajaxComplete(function () {
+                    actionLog('');
                 });
 
                 $(document).on('click', '.delete-resource', function () {
@@ -233,6 +242,9 @@
             var loadResources = function() {
                 $.ajax({
                     url: apiUrl + '/season/' + seasonId + '/resources',
+                    beforeSend: function () {
+                        actionLog('loading resouces');
+                    },
                     success: function (res) {
                         rawResourcesData = res;
                         resources = {
@@ -318,7 +330,7 @@
                 }
 
                 return false;
-            }
+            };
 
             var getResources = function() {
                 return {
@@ -329,7 +341,7 @@
 
                     ]
                 };
-            }
+            };
 
             var getTile = function (tileId) {
                 return mapping = {
@@ -362,6 +374,10 @@
                     52: [607, 655],
                     53: [679, 655],
                 }[tileId];
+            };
+
+            var actionLog = function (message) {
+                el.actionLog.html(message !== '' ? message + '...' : message);
             }
         };
 
