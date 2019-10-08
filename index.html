@@ -87,6 +87,11 @@
             <div>
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>Season : 22</div>
+                    <div>
+                        <a id="download" download="map.png">
+                            <button id="download-map">download the map</button>
+                        </a>
+                    </div>
                     <div id="action-log"></div>
                     <div class="list-resources">
                         <div class="resource-wrapper">
@@ -157,7 +162,7 @@
             var rawResourcesData = [];
             var el = {};
             var seasonId = 22;
-            var apiUrl = 'http://core.daudau.cc/api/ih';
+            var apiUrl = '//core.daudau.cc/api/ih';
             var castle = {
                 x: 73,
                 y: 92,
@@ -199,6 +204,7 @@
 
                 el.resourceForm = $('.resource-form');
                 el.actionLog = $('#action-log');
+                el.btnDownloadMap = $('#download-map');
             }
 
             this.bindEvents = function () {
@@ -250,6 +256,14 @@
 
                 $('.toggle').on('click', function () {
                     $('.control').toggle();
+                });
+
+                el.btnDownloadMap.on('click', function () {
+                    console.log("click download map");
+                    var download = document.getElementById("download");
+                    var image = canvas.toDataURL("image/png")
+                        .replace("image/png", "image/octet-stream");
+                    download.setAttribute("href", image);
                 });
             };
 
@@ -416,7 +430,15 @@
             };
 
             var centerTo = function (x, y) {
-                // document.getElementById('app').scrollLeft = ;
+                var appWrapper = document.getElementById('app');
+                var marginLeft = mapWidth/2 + x*tileWidth/2 - y*tileWidth/2 - appWrapper.offsetWidth/2;
+                var marginTop = x*tileHeight/2 + y*tileHeight/2 - appWrapper.offsetHeight / 2;
+
+                marginLeft = marginLeft > 0 ? marginLeft : 0;
+                marginTop = marginTop > 0 ? marginTop : 0;
+
+                appWrapper.scrollLeft = marginLeft;
+                appWrapper.scrollTop = marginTop;
             };
         };
 
