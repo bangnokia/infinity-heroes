@@ -45,6 +45,8 @@
             display: inline-block;
             float: left;
             width: 50%;
+            max-height: 300px;
+            overflow-y: auto;
         }
         .resource-wrapper form input {
             width: 32px;
@@ -82,6 +84,9 @@
         .clear {
             clear: both;
         }
+        .resource-form {
+            margin-bottom: 5px;
+        }
     </style>
 
     <script src="dragscroll.js"></script>
@@ -102,6 +107,7 @@
                     </div>
                     <div id="action-log"></div>
                     <div class="list-resources">
+                        <!-- RUINS -->
                         <div class="resource-wrapper">
                             <h3>Ruin</h3>
                             <form data-type="ruin" class="resource-form">
@@ -123,6 +129,7 @@
                             </table>
                         </div>
 
+                        <!-- OASISES -->
                         <div class="resource-wrapper">
                             <h3>Oasis</h3>
                             <form data-type="oasis" class="resource-form">
@@ -143,6 +150,31 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <div class="clear"></div>
+
+                        <!-- CASTLE -->
+                        <div class="resource-wrapper">
+                            <h3>Castles</h3>
+                            <form data-type="castle" class="resource-form">
+                                <input type="text" name="x">
+                                <input type="text" name="y">
+                                <button type="submit">+</button>
+                            </form>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+
 
                         <div class="clear"></div>
                         <a href="//github.com/bangnokia/infinity-heroes" style="float: right">fork me</a>
@@ -183,7 +215,6 @@
 
                 sprite.onload = function () {
                     loadResources();
-                    // document.getElementById('app').scrollLeft = 3000;
                     centerTo(castle.x, castle.y);
                 }
 
@@ -205,6 +236,7 @@
                 resourceAssets = {
                     'oasis': [111, 814, 123, 79],
                     'ruin': [2, 802, 103, 91],
+                    'castle': [42, 898, 133, 113]
                 };
 
                 sprite = new Image();
@@ -299,6 +331,7 @@
                         resources = {
                             'ruin': [],
                             'oasis': [],
+                            'castle': []
                         };
                         res.map(function (item) {
                             resources[item.type].push([item.x, item.y]);
@@ -362,14 +395,22 @@
                                 50,
                                 44
                             );
+                            if (coord.type == 'castle') {
+                                console.log(coord);
+                                console.log('write text');
+                                ctx.font = "10px Arial";
+                                ctx.fillStyle = "red";
+                                ctx.textAlign = 'center';
+                                ctx.fillText("DANGER", x - j * tileWidth/2 + 30, y + tileHeight / 2 + 12);
+                            }
                         }
 
-                        // draw castle
+                        // draw our own castle
                         if (castle.x == i && castle.y == j) {
                             ctx.drawImage(
                                 sprite,
-                                getTile('castle')[0],
-                                getTile('castle')[1],
+                                resourceAssets['castle'][0],
+                                resourceAssets['castle'][1],
                                 133,
                                 113,
                                 x - j * tileWidth / 2 + 5,
@@ -392,7 +433,7 @@
                     if (resources.hasOwnProperty(type)) {
                         for (let i = 0; i < resources[type].length; i++) {
                             if (resources[type][i][0] === x && resources[type][i][1] === y) {
-                                return resourceAssets[type];
+                                return Object.assign(resourceAssets[type], {'type': type});
                             }
                         }
                     }
