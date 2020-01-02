@@ -100,7 +100,7 @@
             <div>
                 <h1 id="logo"><span id="logo-text-1">German</span><span id="logo-text-2">Wings<span></h1>
                     <div>
-                        <h3 class="title">Season : 24</h3>
+						<h3 class="title">Season : <span class="season-id"></span></h3>
                         <button id="download-map">download the map</button>
                     </div>
                     <div>
@@ -246,6 +246,8 @@
                 el.resourceForm = $('.resource-form');
                 el.actionLog = $('#action-log');
                 el.btnDownloadMap = $('#download-map');
+
+				$('.season-id').html(seasonId);
             }
 
             this.bindEvents = function () {
@@ -364,8 +366,6 @@
                 var x = 0;
                 var y = 0;
 
-                console.log('start draw');
-
                 for (let i = 0; i < mapSize; i++) {
                     y = i * tileHeight / 2;
                     for (let j = 0; j < mapSize; j++) {
@@ -397,8 +397,6 @@
                                 44
                             );
                             if (coord.type == 'castle') {
-                                console.log(coord);
-                                console.log('write text');
                                 ctx.font = "10px Arial";
                                 ctx.fillStyle = "red";
                                 ctx.textAlign = 'center';
@@ -426,7 +424,6 @@
                     x += tileWidth / 2;
                 }
 
-                console.log('end draw');
             };
 
             var checkAsset = function(x, y) {
