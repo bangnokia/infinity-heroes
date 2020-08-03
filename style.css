@@ -1,0 +1,81 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+#logo {
+    display: block;
+    background: #000;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+#logo-text-2 {
+    background: orange;
+    color: #000;
+    padding: 7px 0;
+    border-radius: 5px;
+}
+
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+#app {
+    height: 100vh;
+    overflow: scroll;
+    flex: 4 1 0;
+}
+.control {
+    position: relative;
+    background: red;
+    width: 240px;
+    flex: 1 1 0;
+    /*display:none;*/
+}
+.resource-wrapper {
+    display: inline-block;
+    float: left;
+    width: 50%;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.resource-wrapper form input {
+    width: 32px;
+}
+table {
+    border-collapse: collapse;
+}
+table tr td, table tr th {
+    border: 1px solid #000;
+}
+table th, table td {
+    text-align: right;
+    width: 25px;
+}
+table tr>td:last-child {
+    text-align: center;
+    width: 15px;
+}
+.delete-resource {
+    cursor: pointer;
+    font-weight: bold;
+}
+.toggle {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.list-resources {
+    height: 80vh;
+    overflow-y: scroll;
+}
+.title {
+    margin-bottom: 0;
+}
+.clear {
+    clear: both;
+}
+.resource-form {
+    margin-bottom: 5px;
+}
